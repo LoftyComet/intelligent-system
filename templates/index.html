@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>智能系统实验演示</title>
+
+
+
+
+    <!-- Bootstrap core CSS -->
+<link href="static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="static/dashboard.css" rel="stylesheet">
+    <link href="static/index.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">智能系统实验</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="/preview">预览</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3">
+            <div a class="nav-link active" >
+              <span data-feather="home"></span>
+                <span>数据库</span>
+            </div>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="?name=user">
+                  <span data-feather="file-text"></span>
+                  用户管理
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="?name=car">
+                  <span data-feather="file-text"></span>
+                  车流量管理
+                </a>
+              </li>
+            </ul>
+
+            <div a class="nav-link active" >
+              <span data-feather="home"></span>
+                <span>知识库</span>
+            </div>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="?name=rule">
+                  <span data-feather="file-text"></span>
+                  知识管理
+                </a>
+              </li>
+            </ul>
+            <div a class="nav-link active" >
+              <span data-feather="home"></span>
+                <span><a href="/preview">仿真系统预览</a></span>
+            </div>
+          </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 id="sub_menu_title" class="h2" menu_name="{{menu_name}}">{{sub_menu}}</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                {% if menu_name == 'user' %}
+                <button id="add_user_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
+                {% elif menu_name == 'car' %}
+                <button id="add_car_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
+                {% end %}
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  {% if menu_name == 'rule' %}
+                    <th scope="col">#</th>
+                    <th scope="col">前提</th>
+                    <th scope="col">结论</th>
+                    <th scope="col">可信度</th>
+                  {% elif menu_name == 'car' %}
+                    <th scope="col">#</th>
+                    <th scope="col">信号灯ID</th>
+                    <th scope="col">车流量</th>
+                    <th scope="col">时间</th>
+                  {% else %}
+                    <th scope="col">#</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col" class="opttd">操作</th>
+                  {% end %}
+                </tr>
+              </thead>
+              <tbody>
+                 {% for index,element in enumerate(entitys) %}
+                 {% if menu_name == 'user' %}
+                 <tr>
+                    <th scope="row">{{index+1}}</th>
+                    <td>{{element.name}}</td>
+                   <td class="opttd">
+                     <a class="optbtn" opttype = "editUser" dataId = "{{element.id}}" username = "{{element.name}}">编辑</a>
+                     <a class="optbtn"  opttype = "deleteUser" dataId = "{{element.id}}" username = "{{element.name}}">删除</a>
+                   </td>
+                  </tr>
+                 {% elif menu_name == 'car' %}
+              <tr>
+                <th scope="row">{{index+1}}</th>
+                <td>{{element.light}}</td>
+                <td>{{element.traffic}}</td>
+                <td>{{element.time}}</td>
+                <td class="opttd">
+                  <a class="optbtn" opttype="editCar" dataId="{{element.id}}" light="{{element.light}}"
+                    traffic="{{element.traffic}}" time="{{element.time}}">编辑</a>
+                  <a class="optbtn" opttype="deleteCar" dataId="{{element.id}}" light="{{element.light}}"
+                    traffic="{{element.traffic}}" time="{{element.time}}">删除</a>
+                </td>
+              </tr>
+              {% end %}
+                  {% end %}
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+<!--添加用户-->
+    <div class="modal fade" id="add_user_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">添加用户</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="fullname" class="col-form-label">姓名:</label>
+                <input type="text" class="form-control" id="fullname">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "add_user_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--编辑用户-->
+    <div class="modal fade" id="edit_user_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >编辑用户</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="fullname" class="col-form-label">姓名:</label>
+                <input type="text" class="form-control" id="edit_user_fullname">
+                <input type="hidden" class="form-control" id="edit_user_id">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "edit_user_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--    添加车流量-->
+    <div class="modal fade" id="add_car_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >添加车流量</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="add_car_light" class="col-form-label">信号灯ID:</label>
+                <input type="text" class="form-control" id="add_car_light">
+
+                <label for="add_car_traffic" class="col-form-label">车流量:</label>
+                <input type="text" class="form-control" id="add_car_traffic">
+
+                <label for="add_car_time" class="col-form-label">时间:</label>
+                <input type="text" class="form-control" id="add_car_time">
+
+                <input type="hidden" class="form-control" id="add_car_id">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "add_car_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--    编辑车流量-->
+    <div class="modal fade" id="edit_car_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >编辑车流量</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="edit_car_light" class="col-form-label">信号灯ID:</label>
+                <input type="text" class="form-control" id="edit_car_light">
+
+                <label for="edit_car_traffic" class="col-form-label">车流量:</label>
+                <input type="text" class="form-control" id="edit_car_traffic">
+
+                <label for="edit_car_time" class="col-form-label">时间:</label>
+                <input type="text" class="form-control" id="edit_car_time">
+
+                <input type="hidden" class="form-control" id="edit_car_id">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "edit_car_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="static/assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="static/dashboard.js"></script>
+    <script src="static/dist/jquery-3.6.0.min.js"></script>
+    <script src="static/dist/index.js"></script>
+  </body>
+</html>
