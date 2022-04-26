@@ -24,6 +24,7 @@ from sqlalchemy.pool import StaticPool
 from sqlalchemy.sql.expression import bindparam
 from sqlalchemy.types import LargeBinary
 from sqlalchemy.types import Text
+from sqlalchemy.types import Float
 from sqlalchemy.types import TypeDecorator
 from tornado.log import app_log
 
@@ -70,8 +71,6 @@ class User(Base):
         return db.query(cls).filter(cls.id == id).first()
 
 class Car(Base):
-    """User Roles"""
-
     __tablename__ = 'car'
     id = Column(Integer, primary_key=True, autoincrement=True)
     light=Column(Integer,unique=False)
@@ -102,7 +101,6 @@ class Car(Base):
 # 路口（id，topRight，eastLeft，eastRight，topLeft）
 class Crossing(Base):
     __tablename__ = 'crossing'
-    # id = Column(Integer, primary_key=True, autoincrement=True)
     cId=Column(Integer,primary_key=True,unique=False)
     topRight=Column(Integer,unique=False)
     eastLeft=Column(Integer, unique=False)
@@ -120,7 +118,7 @@ class Crossing(Base):
         """Find a role by name.
         Returns None if not found.
         """
-        return db.query(cls).filter(cls.cId == cId).last()
+        return db.query(cls).filter(cls.cId == cId).first()
 
     @classmethod
     def findById(cls, db, id):
@@ -132,7 +130,6 @@ class Crossing(Base):
 # 路口对应信号灯（路口id，信号灯id，对应方位）
 class CLight(Base):
     __tablename__ = 'clight'
-    # id = Column(Integer, primary_key=True, autoincrement=True)
     cId=Column(Integer,primary_key=True,unique=False)
     light=Column(Integer,primary_key=True,unique=False)
     direction=Column(Text(255), unique=False)
@@ -145,7 +142,48 @@ class CLight(Base):
 
     @classmethod
     def findbyLight(cls, db, light):
-        return db.query(cls).filter(cls.light == light).last()
+        return db.query(cls).filter(cls.light == light).first()
+
+# 可信度知识
+class CKnowledge(Base):
+    __tablename__ = 'cknowledge'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    condition = Column(Text(255), unique=False)
+    conclusion = Column(Text(255), unique=False)
+    threshold=Column(Float, unique=False)    # 知识使用的阈值
+    def __repr__(self):
+        return "<{} {} >".format(
+            self.__class__.__name__,
+            self.id,
+        )
+    @classmethod
+    def findbyId(cls, db, id):
+        return db.query(cls).filter(cls.id == id).first()
+    @classmethod
+    def findbyCondition(cls, db, condition):
+        return db.query(cls).filter(cls.condition == condition).all()
+
+# 模糊知识
+class FKnowledge(Base):
+    __tablename__ = 'fknowledge'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    condition = Column(Text(255), unique=False)
+    conclusion = Column(Text(255), unique=False)
+    threshold=Column(Float, unique=False)    # 知识使用的阈值
+    updater=Column(Text(255), unique=False)     # 更新者
+    updateTime=Column(Text(255), unique=False)   # 更新时间
+
+    def __repr__(self):
+        return "<{} {} >".format(
+            self.__class__.__name__,
+            self.id,
+        )
+    @classmethod
+    def findbyId(cls, db, id):
+        return db.query(cls).filter(cls.id == id).first()
+    @classmethod
+    def findbyCondition(cls, db, condition):
+        return db.query(cls).filter(cls.condition == condition).all()
 
 
 

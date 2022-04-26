@@ -99,6 +99,8 @@
                 <button id="add_user_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
                 {% elif menu_name == 'car' %}
                 <button id="add_car_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
+                {% elif menu_name == 'rule' %}
+                <button id="add_rule_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
                 {% end %}
               </div>
             </div>
@@ -113,6 +115,8 @@
                     <th scope="col">前提</th>
                     <th scope="col">结论</th>
                     <th scope="col">可信度</th>
+                    <th scope="col">更新者</th>
+                    <th scope="col">更新时间</th>
                   {% elif menu_name == 'car' %}
                     <th scope="col">#</th>
                     <th scope="col">信号灯ID</th>
@@ -126,9 +130,9 @@
                 </tr>
               </thead>
               <tbody>
-                 {% for index,element in enumerate(entitys) %}
-                 {% if menu_name == 'user' %}
-                 <tr>
+                  {% for index,element in enumerate(entitys) %}
+                  {% if menu_name == 'user' %}
+                  <tr>
                     <th scope="row">{{index+1}}</th>
                     <td>{{element.name}}</td>
                    <td class="opttd">
@@ -136,20 +140,37 @@
                      <a class="optbtn"  opttype = "deleteUser" dataId = "{{element.id}}" username = "{{element.name}}">删除</a>
                    </td>
                   </tr>
-                 {% elif menu_name == 'car' %}
-              <tr>
-                <th scope="row">{{index+1}}</th>
-                <td>{{element.light}}</td>
-                <td>{{element.traffic}}</td>
-                <td>{{element.time}}</td>
-                <td class="opttd">
-                  <a class="optbtn" opttype="editCar" dataId="{{element.id}}" light="{{element.light}}"
-                    traffic="{{element.traffic}}" time="{{element.time}}">编辑</a>
-                  <a class="optbtn" opttype="deleteCar" dataId="{{element.id}}" light="{{element.light}}"
-                    traffic="{{element.traffic}}" time="{{element.time}}">删除</a>
-                </td>
-              </tr>
-              {% end %}
+                  {% elif menu_name == 'car' %}
+                  <tr>
+                    <th scope="row">{{index+1}}</th>
+                    <td>{{element.light}}</td>
+                    <td>{{element.traffic}}</td>
+                    <td>{{element.time}}</td>
+                    <td class="opttd">
+                      <a class="optbtn" opttype="editCar" dataId="{{element.id}}" light="{{element.light}}"
+                        traffic="{{element.traffic}}" time="{{element.time}}">编辑</a>
+                      <a class="optbtn" opttype="deleteCar" dataId="{{element.id}}" light="{{element.light}}"
+                        traffic="{{element.traffic}}" time="{{element.time}}">删除</a>
+                    </td>
+                  </tr>
+                  {% elif menu_name == 'rule' %}
+                  <tr>
+                    <th scope="row">{{index+1}}</th>
+                    <td>{{element.condition}}</td>
+                    <td>{{element.conclusion}}</td>
+                    <td>{{element.threshold}}</td>
+                    <td>{{element.updater}}</td>
+                    <td>{{element.updateTime}}</td>
+                    <td class="opttd">
+                      <a class="optbtn" opttype="editRule" dataId="{{element.id}}" condition="{{element.condition}}"
+                        conclusion="{{element.conclusion}}" threshold="{{element.threshold}}"
+                         updater="{{element.updater}}" updateTime="{{element.updateTime}}">编辑</a>
+                      <a class="optbtn" opttype="deleteRule" dataId="{{element.id}}" condition="{{element.condition}}"
+                        conclusion="{{element.conclusion}}" threshold="{{element.threshold}}"
+                         updater="{{element.updater}}" updateTime="{{element.updateTime}}">删除</a>
+                    </td>
+                  </tr>
+                  {% end %}
                   {% end %}
               </tbody>
             </table>
@@ -267,6 +288,85 @@
         </div>
       </div>
     </div>
+
+<!--    添加知识-->
+    <div class="modal fade" id="add_rule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >添加知识</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="add_rule_condition" class="col-form-label">前提:</label>
+                <input type="text" class="form-control" id="add_rule_condition">
+
+                <label for="add_rule_conclusion" class="col-form-label">结论:</label>
+                <input type="text" class="form-control" id="add_rule_conclusion">
+
+                <label for="add_rule_threshold" class="col-form-label">可信度:</label>
+                <input type="text" class="form-control" id="add_rule_threshold">
+
+                <label for="add_rule_updater" class="col-form-label">更新者:</label>
+                <input type="text" class="form-control" id="add_rule_updater">
+
+                <label for="add_rule_updateTime" class="col-form-label">更新时间:</label>
+                <input type="text" class="form-control" id="add_rule_updateTime">
+
+
+                <input type="hidden" class="form-control" id="add_rule_id">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "add_rule_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--    编辑知识-->
+    <div class="modal fade" id="edit_rule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >编辑车流量</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="edit_rule_condition" class="col-form-label">前提:</label>
+                <input type="text" class="form-control" id="edit_rule_condition">
+
+                <label for="edit_rule_conclusion" class="col-form-label">结论:</label>
+                <input type="text" class="form-control" id="edit_rule_conclusion">
+
+                <label for="edit_rule_threshold" class="col-form-label">可信度:</label>
+                <input type="text" class="form-control" id="edit_rule_threshold">
+
+                <label for="edit_rule_updater" class="col-form-label">更新者:</label>
+                <input type="text" class="form-control" id="edit_rule_updater">
+
+                <label for="edit_rule_updateTime" class="col-form-label">更新时间:</label>
+                <input type="text" class="form-control" id="edit_rule_updateTime">
+
+                <input type="hidden" class="form-control" id="edit_rule_id">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id = "edit_rule_submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <script src="static/assets/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
     <script src="static/dashboard.js"></script>

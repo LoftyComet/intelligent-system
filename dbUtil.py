@@ -86,3 +86,63 @@ def findCLightList(db):
     return clights
 
 
+# 可信度知识库的增删改查
+def addCKnowledge(db, condition, conclusion, threshold, updater, updateTime):
+    cknowledge=orm.CKnowledge(condition=condition,
+                              conclusion=conclusion,
+                              threshold=threshold,
+                              updater=updater,
+                              updateTime=updateTime)
+    db.add(cknowledge)
+    db.commit()
+def updateCKnowledge(db, id, condition, conclusion, threshold,updater, updateTime):
+    cknowledge=orm.CKnowledge.findbyId(db,id)
+    cknowledge.condition=condition
+    cknowledge.conclusion=conclusion
+    cknowledge.threshold=threshold
+    cknowledge.updater=updater
+    cknowledge.updateTime=updateTime
+    db.commit()
+def deleteCKnowledge(db, id):
+    cknowledge = orm.CKnowledge.findbyId(db, id)
+    db.delete(cknowledge)
+
+def findCKnowledgeList(db):
+    cknowledges=db.query(orm.CKnowledge).all()
+    return cknowledges
+def findCKknowledgeById(db, id):
+    cknowledge = orm.CKnowledge.findbyId(db, id)
+    return cknowledge
+def findCKknowledgeByCondition(db, condition):
+    cknowledges = orm.CKnowledge.findbyCondition(db, condition)
+    return cknowledges
+
+# 模糊知识库的增删改查
+def addFKnowledge(db,condition, conclusion, threshold,updater, updateTime):
+    fknowledge=orm.FKnowledge(condition=condition,conclusion=conclusion,
+                              threshold=threshold, updater=updater, updateTime=updateTime)
+    db.add(fknowledge)
+    db.commit()
+def updateFKnowledge(db, id, condition, conclusion, threshold,updater, updateTime):
+    fknowledge=orm.FKnowledge.findbyId(db,id)
+    fknowledge.condition=condition
+    fknowledge.conclusion=conclusion
+    fknowledge.threshold=threshold
+    fknowledge.updater=updater
+    fknowledge.updateTime=updateTime
+    db.commit()
+def deleteFKnowledge(db, id):
+    fknowledge = orm.FKnowledge.findbyId(db, id)
+    db.delete(fknowledge)
+
+def findFKnowledgeList(db):
+    fknowledges=db.query(orm.FKnowledge).all()
+    return fknowledges
+def findFKknowledgeById(db, id):
+    fknowledge = orm.FKnowledge.findbyId(db, id)
+    return fknowledge
+def findFKknowledgeByCondition(db, condition):
+    fknowledges = orm.FKnowledge.findbyCondition(db, condition)
+    return fknowledges
+
+

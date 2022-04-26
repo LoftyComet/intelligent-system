@@ -25,6 +25,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
         elif menu_name == 'rule':
             sub_menu = "知识管理"
+            entitys = dbUtil.findFKnowledgeList(db)
 
         #默认
         else:
