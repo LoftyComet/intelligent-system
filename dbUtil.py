@@ -145,4 +145,22 @@ def findFKknowledgeByCondition(db, condition):
     fknowledges = orm.FKnowledge.findbyCondition(db, condition)
     return fknowledges
 
+# 查找模糊矩阵
+def addFuzzyMatrix(db,string):
+    fuzzyMatrix=orm.FuzzyMatrix(string)
+    db.add(fuzzyMatrix)
+    db.commit()
+    # return None
+def findFuzzyMatrixById(db,id):
+    fuzzyMatrix=orm.FuzzyMatrix.findbyId(db,id)
+    return fuzzyMatrix
+def updateFuzzyMatrix(db, id,matrix):
+    fuzzyMatrix = orm.FuzzyMatrix.findbyId(db, id)
+    fuzzyMatrix.matrix=matrix
+def deleteFuzzyMatrix(db, id):
+    fuzzyMatrix = orm.FuzzyMatrix.findbyId(db, id)
+    db.delete(fuzzyMatrix)
+
+
+
 
