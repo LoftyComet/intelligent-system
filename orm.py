@@ -196,6 +196,8 @@ class FuzzyMatrix(Base):
             self.__class__.__name__,
             self.matrix,
         )
+    def __init__(self,matrix):
+        self.matrix=matrix
 
     @classmethod
     def findbyId(cls, db, id):
