@@ -4,6 +4,7 @@ import tornado.ioloop
 import json
 import orm
 import dbUtil
+import numpy as np
 
 class UserHandler(tornado.web.RequestHandler):
 
@@ -74,6 +75,88 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
             updateTime = self.get_argument("updateTime")
             threshold=float(threshold_str)
             dbUtil.addFKnowledge(db,condition, conclusion, threshold, updater, updateTime)
+            # 对模糊矩阵进行更新
+            # 条件向量
+            veryLittle=np.mat('1 0.5 0 0 0')  # 1*5的矩阵
+            little=np.mat('0.3 1 0.3 0 0')
+            middle=np.mat('0 0.3 1 0.3 0')
+            much=np.mat('0 0 0.3 1 0.3')
+            veryMuch=np.mat('0 0 0 0.5 1')
+            condition_list=condition.split("，")
+            condition_array0=[]
+            condition_array1=[]
+            # 条件一
+            if(condition_list[0]=="当前路口车流量极多"):
+                condition_array0=veryMuch
+            elif(condition_list[0]=="当前路口车流量较多"):
+                condition_array0=much
+            elif (condition_list[0] == "当前路口车流量适中"):
+                condition_array0 = middle
+            elif (condition_list[0] == "当前路口车流量"):
+                condition_array0 = little
+            elif (condition_list[0] == "当前路口车流量较多"):
+                condition_array0 = veryLittle
+            # 条件二
+            if (condition_list[1] == "临近路口车流量极多"):
+                condition_array1 = veryMuch
+            elif (condition_list[1] == "临近路口车流量较多"):
+                condition_array1 = much
+            elif (condition_list[1] == "临近路口车流量适中"):
+                condition_array1 = middle
+            elif (condition_list[1] == "临近路口车流量"):
+                condition_array1 = little
+            elif (condition_list[1] == "临近路口车流量较多"):
+                condition_array1 = veryLittle
+            condition_array=np.dot(condition_array0.T,condition_array1)
+            condition_array=condition_array.reshape(1,25)  # 展开  1*25
+            # dbUtil.deleteFKnowledge(db,0)
+            dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,0)
+            if (dbfuzzyMatrix== None):
+                # print("ssssssssssssssssssssssssssssssssss")
+                fuzzyMatrix=np.zeros((25,5))
+                # dbUtil.addFuzzyMatrix(db, " ")
+            else:
+                fuzzyMatrix=np.mat(dbfuzzyMatrix.matrix)   # 同行空格隔开，不同行分号隔开
+
+            # 结论
+            verySmall=np.mat('1 0.5 0 0 0')
+            small=np.mat('0.3 1 0.3 0 0')
+            equal = np.mat('0 0.3 1 0.3 0')
+            large = np.mat('0 0 0.3 1 0.3')
+            veryLarge = np.mat('0 0 0 0.5 1')
+            conclusion_array=[]
+            if (conclusion == "红灯与绿灯之比很大" or conclusion=="等待比例很大"):
+                conclusion_array = veryLarge
+            elif (conclusion == "红灯与绿灯之比较大" or conclusion=="等待比例较大"):
+                conclusion_array = large
+            elif (conclusion == "红灯与绿灯之比均衡" or conclusion=="等待比例均衡"):
+                conclusion_array = equal
+            elif (conclusion == "红灯与绿灯之比较小" or conclusion=="等待比例较小"):
+                conclusion_array = small
+            elif (conclusion == "红灯与绿灯之比很大" or conclusion=="等待比例很小"):
+                conclusion_array = verySmall
+            addMatrix=np.dot(condition_array.T,conclusion_array)   # 25*5
+            fuzzyMatrix=np.maximum(fuzzyMatrix,addMatrix)
+            newMatrixStr=""
+            for i in range(fuzzyMatrix.shape[0]):
+                for j in range(fuzzyMatrix.shape[1]):
+                    if(i==0 and j==0):
+                        newMatrixStr+=str(fuzzyMatrix[i,j])
+                    else:
+                        newMatrixStr+=str(fuzzyMatrix[i,j])
+                        newMatrixStr += " "
+                newMatrixStr+=";"
+            # print("newMatrixStr")
+            # print(newMatrixStr)
+            # print(dbUtil.findFuzzyMatrixById(db,0))
+            # dbUtil.updateFuzzyMatrix(db, 0, newMatrixStr)
+            if (dbfuzzyMatrix== None):
+                dbUtil.addFuzzyMatrix(db, newMatrixStr)
+            else:
+                dbUtil.updateFuzzyMatrix(db, 0, newMatrixStr)
+                # print(newMatrixStr)
+
+
         elif type == 'edit':
             id=self.get_argument("id");
             condition = self.get_argument("condition")
@@ -81,8 +164,8 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
             threshold_str = self.get_argument("threshold")
             updater = self.get_argument("updater")
             updateTime = self.get_argument("updateTime")
-            print("threshold")
-            print(threshold_str)
+            # print("threshold")
+            # print(threshold_str)
             threshold = float(threshold_str)
             dbUtil.updateFKnowledge(db,id,condition, conclusion, threshold, updater, updateTime)
         elif type == 'delete':
