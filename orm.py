@@ -185,6 +185,20 @@ class FKnowledge(Base):
     def findbyCondition(cls, db, condition):
         return db.query(cls).filter(cls.condition == condition).all()
 
+# 模糊矩阵的存储（暂定只有一行）
+class FuzzyMatrix(Base):
+    __tablename__ = 'fuzzymatrix'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    matrix=Column(Text(512), unique=False)
 
+    def __repr__(self):
+        return "<{} {} >".format(
+            self.__class__.__name__,
+            self.matrix,
+        )
+
+    @classmethod
+    def findbyId(cls, db, id):
+        return db.query(cls).filter(cls.id == id).first()
 
 

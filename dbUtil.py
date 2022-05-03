@@ -74,7 +74,7 @@ def addCLight(db, cId, light,direction):
 
 def updateCLight(db, cId, light,direction):
     clight=orm.CLight.findbyLight(light)
-    clight.cId=cId;
+    clight.cId=cId
     clight.direction=direction
     db.commit()
 def deleteCLight(db, light):

@@ -3,6 +3,8 @@ import json
 import threading
 import serial
 import asyncio
+import dbUtil
+from compute import getFuzzyElement,getFuzzyVector,getProportion
 
 serialPort = "com6"
 baudRate = 9600
@@ -65,15 +67,24 @@ def reasonHandler(data):
 
     ####################推理机处理逻辑开始#################
 
+    input1,input2 = getFuzzyElement(topRight,eastLeft,eastRight,topLeft)
+    dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,0)
+    if (dbfuzzyMatrix== None):
+        # print("ssssssssssssssssssssssssssssssssss")
+        fuzzyMatrix=np.zeros((25,5))
+        # dbUtil.addFuzzyMatrix(db, " ")
+    else:
+        fuzzyMatrix=np.mat(dbfuzzyMatrix.matrix)
+    decision = getFuzzyVector(input1,input2,fuzzyMatrix)
+    topRight,eastLeft= getProportion(decision)
+    eastRight = eastLeft
+    topLeft = topRight
+
 
 
     ####################推理机处理逻辑结束#################
 
     #推理机推理结果
-    topRight = 10
-    eastLeft = 10
-    eastRight = 10
-    topLeft = 10
 
     intersectionLightTimes=[topRight,eastLeft,eastRight,topLeft]
 
