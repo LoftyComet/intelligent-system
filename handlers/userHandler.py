@@ -92,9 +92,9 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
                 condition_array0=much
             elif (condition_list[0] == "当前路口车流量适中"):
                 condition_array0 = middle
-            elif (condition_list[0] == "当前路口车流量"):
+            elif (condition_list[0] == "当前路口车流量较少"):
                 condition_array0 = little
-            elif (condition_list[0] == "当前路口车流量较多"):
+            elif (condition_list[0] == "当前路口车流量极少"):
                 condition_array0 = veryLittle
             # 条件二
             if (condition_list[1] == "临近路口车流量极多"):
@@ -103,9 +103,9 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
                 condition_array1 = much
             elif (condition_list[1] == "临近路口车流量适中"):
                 condition_array1 = middle
-            elif (condition_list[1] == "临近路口车流量"):
+            elif (condition_list[1] == "临近路口车流量较少"):
                 condition_array1 = little
-            elif (condition_list[1] == "临近路口车流量较多"):
+            elif (condition_list[1] == "临近路口车流量极少"):
                 condition_array1 = veryLittle
             condition_array=np.dot(condition_array0.T,condition_array1)
             condition_array=condition_array.reshape(1,25)  # 展开  1*25
