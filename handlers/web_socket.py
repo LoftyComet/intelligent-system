@@ -1,12 +1,16 @@
+import numpy as np
+from sqlalchemy import create_engine
 import tornado.websocket
 import json
 import threading
 import serial
 import asyncio
 import dbUtil
+
+from sqlalchemy.orm import sessionmaker
 from compute import getFuzzyElement,getFuzzyVector,getProportion
 
-serialPort = "com6"
+serialPort = "com4"
 baudRate = 9600
 
 # 串口
@@ -66,15 +70,32 @@ def reasonHandler(data):
     print("topLeft:"+str(topLeft)+ ";topRight:"+str(topRight)+";eastLeft="+str(eastLeft)+";eastRight="+str(eastRight))
 
     ####################推理机处理逻辑开始#################
-
+    # 获取模糊集元素
     input1,input2 = getFuzzyElement(topRight,eastLeft,eastRight,topLeft)
-    dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,0)
+
+    # 连接数据库
+    # engine=create_engine("mysql+pymysql://root:a5230411@localhost:3306/test",echo=True)
+    # db_session = sessionmaker(bind=engine)
+    # session = db_session()
+    # session.query(User).filter(User.id==2).update({'name':'test'})
+    db_url = 'mysql+mysqlconnector://root:123456@127.0.0.1:3306/traffic?charset=utf8&autocommit=true&auth_plugin=mysql_native_password'
+    # db_url = 'mysql+mysqlconnector://root:lqq@127.0.0.1:3306/traffic?auth_plugin=mysql_native_password'
+    engine = create_engine(db_url,encoding='utf-8',echo=True)
+    session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+    db = session_factory()
+    # 调用数据库获取模糊矩阵
+    dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,1)
     if (dbfuzzyMatrix== None):
         # print("ssssssssssssssssssssssssssssssssss")
         fuzzyMatrix=np.zeros((25,5))
         # dbUtil.addFuzzyMatrix(db, " ")
     else:
-        fuzzyMatrix=np.mat(dbfuzzyMatrix.matrix)
+        dbfuzzyMatrixList=dbfuzzyMatrix.matrix.split(" ")
+        for i in dbfuzzyMatrixList:
+            i=float(i)
+        fuzzyMatrix=np.matrix(dbfuzzyMatrixList)
+        fuzzyMatrix=fuzzyMatrix.reshape((25,5))
+        fuzzyMatrix=fuzzyMatrix.astype('float64')
     decision = getFuzzyVector(input1,input2,fuzzyMatrix)
     topRight,eastLeft= getProportion(decision)
     eastRight = eastLeft

@@ -110,13 +110,19 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
             condition_array=np.dot(condition_array0.T,condition_array1)
             condition_array=condition_array.reshape(1,25)  # 展开  1*25
             # dbUtil.deleteFKnowledge(db,0)
-            dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,0)
+            dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,1)
             if (dbfuzzyMatrix== None):
-                # print("ssssssssssssssssssssssssssssssssss")
+                print("ssssssssssssssssssssssssssssssssss")
                 fuzzyMatrix=np.zeros((25,5))
-                # dbUtil.addFuzzyMatrix(db, " ")
+                dbUtil.addFuzzyMatrix(db, " ")
+
             else:
-                fuzzyMatrix=np.mat(dbfuzzyMatrix.matrix)   # 同行空格隔开，不同行分号隔开
+                dbfuzzyMatrixList=dbfuzzyMatrix.matrix.split(" ")
+                for i in dbfuzzyMatrixList:
+                    i=float(i)
+                fuzzyMatrix=np.matrix(dbfuzzyMatrixList)
+                fuzzyMatrix=fuzzyMatrix.reshape((25,5))
+                # fuzzyMatrix=np.mat(dbfuzzyMatrix.matrix)   # 同行空格隔开，不同行分号隔开
 
             # 结论
             verySmall=np.mat('1 0.5 0 0 0')
@@ -135,7 +141,10 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
                 conclusion_array = small
             elif (conclusion == "红灯与绿灯之比很大" or conclusion=="等待比例很小"):
                 conclusion_array = verySmall
+
             addMatrix=np.dot(condition_array.T,conclusion_array)   # 25*5
+            fuzzyMatrix=fuzzyMatrix.astype('float64')
+            addMatrix=addMatrix.astype('float64')
             fuzzyMatrix=np.maximum(fuzzyMatrix,addMatrix)
             newMatrixStr=""
             for i in range(fuzzyMatrix.shape[0]):
@@ -143,18 +152,21 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
                     if(i==0 and j==0):
                         newMatrixStr+=str(fuzzyMatrix[i,j])
                     else:
-                        newMatrixStr+=str(fuzzyMatrix[i,j])
                         newMatrixStr += " "
-                newMatrixStr+=";"
-            # print("newMatrixStr")
-            # print(newMatrixStr)
-            # print(dbUtil.findFuzzyMatrixById(db,0))
-            # dbUtil.updateFuzzyMatrix(db, 0, newMatrixStr)
-            if (dbfuzzyMatrix== None):
-                dbUtil.addFuzzyMatrix(db, newMatrixStr)
-            else:
-                dbUtil.updateFuzzyMatrix(db, 0, newMatrixStr)
-                # print(newMatrixStr)
+                        newMatrixStr+=str(fuzzyMatrix[i,j]) 
+                # newMatrixStr+=" "
+            
+            
+            dbUtil.updateFuzzyMatrix(db, 1, newMatrixStr)
+            
+            # if (dbfuzzyMatrix== None):
+            #     print("newMatrixStr-----------------------------------")
+            #     print(newMatrixStr)
+            #     dbUtil.addFuzzyMatrix(db, newMatrixStr)
+            # else:
+            #     dbUtil.updateFuzzyMatrix(db, 0, newMatrixStr)
+            #     print("newMatrixStr")
+            #     print(newMatrixStr)
 
 
         elif type == 'edit':

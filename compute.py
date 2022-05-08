@@ -8,27 +8,28 @@ def getFuzzyVector(input1,input2,fuzzy_matrix):
     根据两个输入决策获取决策结果
     """
     if (input1=="VF"):
-        input1 = np.array(1,0.5,0,0,0)
+        input1 = np.matrix([1,0.5,0,0,0])
     elif (input1=="LF"):
-        input1 = np.array(0.5,1,0.5,0,0)
+        input1 = np.matrix([0.5,1,0.5,0,0])
     elif (input1=="M"):
-        input1 = np.array(0,0.5,1,0.5,0)
+        input1 = np.matrix([0,0.5,1,0.5,0])
     elif (input1=="LM"):
-        input1 = np.array(0,0,0.5,1,0.5)
+        input1 = np.matrix([0,0,0.5,1,0.5])
     elif (input1=="VM"):
-        input1 = np.array(0,0,0,0.5,1)
+        input1 = np.matrix([0,0,0,0.5,1])
     if (input2=="VF"):
-        input2 = np.array(1,0.5,0,0,0)
+        input2 = np.matrix([1,0.5,0,0,0])
     elif (input2=="LF"):
-        input2 = np.array(0.5,1,0.5,0,0)
+        input2 = np.matrix([0.5,1,0.5,0,0])
     elif (input2=="M"):
-        input2 = np.array(0,0.5,1,0.5,0)
+        input2 = np.matrix([0,0.5,1,0.5,0])
     elif (input2=="LM"):
-        input2 = np.array(0,0,0.5,1,0.5)
+        input2 = np.matrix([0,0,0.5,1,0.5])
     elif (input2=="VM"):
-        input2 = np.array(0,0,0,0.5,1)
-    temp = input1 * input2
-    result = np.dot(temp.flatten(),fuzzy_matrix)
+        input2 = np.matrix([0,0,0,0.5,1])
+    temp = input1.T * input2
+    
+    result = np.dot(temp.flatten()+0.1,fuzzy_matrix)
     return result
 
 def getVF(car):
@@ -71,14 +72,17 @@ def getProportion(decision):
     """
     根据决策类型得出时间长度
     """
+    decision = decision.tolist()
+    decision = decision[0]
+    print(decision)
     index = decision.index(max(decision))
     if (index==0):
-        return 1,2
+        return 10,20
     elif (index==1):
-        return 1,1.5
+        return 12,18
     elif (index==2):
-        return 1,1
+        return 15,15
     elif (index==3):
-        return 1.5,1
+        return 18,12
     else :
-        return 2,1
+        return 20,10
