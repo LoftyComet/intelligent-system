@@ -17,7 +17,7 @@ from orm import Base
 
 
 if __name__ == '__main__':
-    db_url = 'mysql+mysqlconnector://root:123456@127.0.0.1:3306/traffic?charset=utf8&autocommit=true&auth_plugin=mysql_native_password'
+    db_url = 'mysql+mysqlconnector://root:lqq@127.0.0.1:3306/traffic?charset=utf8&autocommit=true&auth_plugin=mysql_native_password'
     # db_url = 'mysql+mysqlconnector://root:lqq@127.0.0.1:3306/traffic?auth_plugin=mysql_native_password'
     engine = create_engine(db_url,encoding='utf-8',echo=True)
     Base.metadata.create_all(engine)

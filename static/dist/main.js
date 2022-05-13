@@ -194,12 +194,14 @@
           guiWorld.add(world, 'clear');
           guiWorld.add(world, 'addacar');
           guiWorld.add(world, 'generateMap');
+          // guiWorld
           guiVisualizer = gui.addFolder('visualizer');
           guiVisualizer.open();
           guiVisualizer.add(visualizer, 'running').listen();
           guiVisualizer.add(visualizer, 'debug').listen();
           guiVisualizer.add(visualizer.zoomer, 'scale', 0.1, 2).listen();
           guiVisualizer.add(visualizer, 'timeFactor', 0.1, 10).listen();
+          // guiVisualizer.add(visualizer,"解释器").listen();
           guiWorld.add(world, 'carsNumber').min(0).max(200).step(1).listen();
           guiWorld.add(world, 'instantSpeed').step(0.00001).listen();
           guiWorld.add(world, 'SouthNorthRight').step(0.00001).listen();

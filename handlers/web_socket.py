@@ -11,7 +11,7 @@ from handlers.interpreter import outputDecision, outputEvidence
 from sqlalchemy.orm import sessionmaker
 from compute import getFuzzyElement,getFuzzyVector,getProportion
 
-serialPort = "com4"
+serialPort = "com6"
 baudRate = 9600
 
 # 串口
@@ -87,8 +87,6 @@ def reasonHandler(data):
         fuzzyMatrix=np.zeros((25,5))
     else:
         dbfuzzyMatrixList=dbfuzzyMatrix.matrix.split(" ")
-        for i in dbfuzzyMatrixList:
-            i=float(i)
         fuzzyMatrix=np.matrix(dbfuzzyMatrixList)
         fuzzyMatrix=fuzzyMatrix.reshape((25,5))
         fuzzyMatrix=fuzzyMatrix.astype('float64')

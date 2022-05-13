@@ -189,8 +189,30 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
         self.render("index.html")
 
+class Interperter(tornado.web.RequestHandler):
+
+    def post(self, *args, **kwargs):
+        db = self.settings['db']
+        dic = {"status":True,"message":""}
+        type = self.get_argument("type")
+        if type == 'edit':
+            id=self.get_argument("id");
+            time = self.get_argument("time")
+            log = self.get_argument("log")
+            dbUtil.updateInterpreter(db,id,time,log)
+        elif type == 'delete':
+            id = self.get_argument("id")
+            dbUtil.deleteInterpreter(db,id)
+
+        self.write(json.dumps(dic))
+
+    def get(self, *args, **kwargs):
+        self.render("index.html")
+
+
 default_handlers = [
     (r"/user", UserHandler),
     (r"/car", CarHandler),
     (r"/rule", FKnowledgeHandler),
+    (r"/interpreter", Interperter),
 ]
