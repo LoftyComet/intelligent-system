@@ -203,4 +203,25 @@ class FuzzyMatrix(Base):
     def findbyId(cls, db, id):
         return db.query(cls).filter(cls.id == id).first()
 
+# 解释器的存储
+class Interpreter(Base):
+    __tablename__ = 'interpreter'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    time = Column(Text(512), unique=False)
+    log = Column(Text(512), unique=False)
+
+    def __repr__(self):
+        return "<{} {} >".format(
+            self.__class__.__name__,
+            self.log,
+        )
+
+    def __init__(self, time,log):
+        self.time = time
+        self.log = log
+
+    @classmethod
+    def findbyId(cls, db, id):
+        return db.query(cls).filter(cls.id == id).first()
+
 

@@ -5,7 +5,7 @@ from pandas import array
 
 def getFuzzyVector(input1,input2,fuzzy_matrix):
     """
-    根据两个输入决策获取决策结果
+    根据两个输入获取决策结果
     """
     if (input1=="VF"):
         input1 = np.matrix([1,0.5,0,0,0])
@@ -28,7 +28,6 @@ def getFuzzyVector(input1,input2,fuzzy_matrix):
     elif (input2=="VM"):
         input2 = np.matrix([0,0,0,0.5,1])
     temp = input1.T * input2
-    
     result = np.dot(temp.flatten()+0.1,fuzzy_matrix)
     return result
 

@@ -162,5 +162,28 @@ def deleteFuzzyMatrix(db, id):
     db.delete(fuzzyMatrix)
 
 
+# 对解释器数据库的操作
+def addInterpreter(db,time,log):
+    interpreter=orm.Interpreter(time,log)
+    db.add(interpreter)
+    db.commit()
+
+def findInterpreter(db, id):
+    interpreter=orm.Interpreter.findbyId(db, id)
+    return interpreter
+
+def updateInterpreter(db,id, time, log):
+    interpreter = orm.Interpreter.findbyId(db, id)
+    interpreter.time=time
+    interpreter.log=log
+
+def deleteInterpreter(db,id):
+    interpreter = orm.Interpreter.findbyId(db, id)
+    db.delete(interpreter)
+
+def findInterpreterList(db):
+    interpreters = db.query(orm.Interpreter).all()
+    return interpreters
+
 
 
