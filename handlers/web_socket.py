@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from sqlalchemy import create_engine
 import tornado.websocket
@@ -11,7 +12,7 @@ from handlers.interpreter import outputDecision, outputEvidence
 from sqlalchemy.orm import sessionmaker
 from compute import getFuzzyElement,getFuzzyVector,getProportion
 
-serialPort = "com6"
+serialPort = "com4"
 baudRate = 9600
 
 # 串口
@@ -92,7 +93,7 @@ def reasonHandler(data):
         fuzzyMatrix=fuzzyMatrix.astype('float64')
     
     # 解释输入
-    outputEvidence(input1,input2)
+    output1,output2 = outputEvidence(input1,input2)
 
     # 推理机开始
 
@@ -103,8 +104,11 @@ def reasonHandler(data):
     topRight,eastLeft= getProportion(decision)
 
     # 解释结论
-    outputDecision(topRight,eastLeft)
-
+    result = outputDecision(topRight,eastLeft)
+    nowtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    returnresult = output1 + "," + output2 + "，所以" + result
+    dbUtil.addInterpreter(db,nowtime,returnresult)
+    
     eastRight = eastLeft
     topLeft = topRight
 
