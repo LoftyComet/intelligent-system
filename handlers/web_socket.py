@@ -6,6 +6,7 @@ import threading
 import serial
 import asyncio
 import dbUtil
+from handlers.interpreter import outputDecision, outputEvidence
 
 from sqlalchemy.orm import sessionmaker
 from compute import getFuzzyElement,getFuzzyVector,getProportion
@@ -74,21 +75,16 @@ def reasonHandler(data):
     input1,input2 = getFuzzyElement(topRight,eastLeft,eastRight,topLeft)
 
     # 连接数据库
-    # engine=create_engine("mysql+pymysql://root:a5230411@localhost:3306/test",echo=True)
-    # db_session = sessionmaker(bind=engine)
-    # session = db_session()
-    # session.query(User).filter(User.id==2).update({'name':'test'})
+    
     db_url = 'mysql+mysqlconnector://root:123456@127.0.0.1:3306/traffic?charset=utf8&autocommit=true&auth_plugin=mysql_native_password'
-    # db_url = 'mysql+mysqlconnector://root:lqq@127.0.0.1:3306/traffic?auth_plugin=mysql_native_password'
     engine = create_engine(db_url,encoding='utf-8',echo=True)
     session_factory = sessionmaker(bind=engine, expire_on_commit=False)
     db = session_factory()
+    
     # 调用数据库获取模糊矩阵
     dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,1)
     if (dbfuzzyMatrix== None):
-        # print("ssssssssssssssssssssssssssssssssss")
         fuzzyMatrix=np.zeros((25,5))
-        # dbUtil.addFuzzyMatrix(db, " ")
     else:
         dbfuzzyMatrixList=dbfuzzyMatrix.matrix.split(" ")
         for i in dbfuzzyMatrixList:
@@ -96,8 +92,21 @@ def reasonHandler(data):
         fuzzyMatrix=np.matrix(dbfuzzyMatrixList)
         fuzzyMatrix=fuzzyMatrix.reshape((25,5))
         fuzzyMatrix=fuzzyMatrix.astype('float64')
+    
+    # 解释输入
+    outputEvidence(input1,input2)
+
+    # 推理机开始
+
     decision = getFuzzyVector(input1,input2,fuzzyMatrix)
+
+
+
     topRight,eastLeft= getProportion(decision)
+
+    # 解释结论
+    outputDecision(topRight,eastLeft)
+
     eastRight = eastLeft
     topLeft = topRight
 

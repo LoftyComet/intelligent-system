@@ -87,6 +87,14 @@
               <span data-feather="home"></span>
                 <span><a href="/preview">仿真系统预览</a></span>
             </div>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="?name=interpreter">
+                  <span data-feather="file-text"></span>
+                  推理过程
+                </a>
+              </li>
+            </ul>
           </div>
         </nav>
 
@@ -121,6 +129,10 @@
                     <th scope="col">#</th>
                     <th scope="col">信号灯ID</th>
                     <th scope="col">车流量</th>
+                    <th scope="col">时间</th>
+                  {% elif menu_name == 'interpreter' %}
+                    <th scope="col">#</th>
+                    <th scope="col">解释</th>
                     <th scope="col">时间</th>
                   {% else %}
                     <th scope="col">#</th>
@@ -168,6 +180,18 @@
                       <a class="optbtn" opttype="deleteRule" dataId="{{element.id}}" condition="{{element.condition}}"
                         conclusion="{{element.conclusion}}" threshold="{{element.threshold}}"
                          updater="{{element.updater}}" updateTime="{{element.updateTime}}">删除</a>
+                    </td>
+                  </tr>
+                  {% elif menu_name == 'interpreter' %}
+                  <tr>
+                    <th scope="row">{{index+1}}</th>
+                    <td>{{element.log}}</td>
+                    <td>{{element.time}}</td>
+                    <td class="opttd">
+                      <a class="optbtn" opttype="editInterpreter" dataId="{{element.id}}" log="{{element.log}}"
+                         time="{{element.time}}">编辑</a>
+                      <a class="optbtn" opttype="deleteInterpreter" dataId="{{element.id}}" log="{{element.log}}"
+                         time="{{element.time}}">删除</a>
                     </td>
                   </tr>
                   {% end %}
@@ -365,7 +389,34 @@
         </div>
       </div>
     </div>
+<!--    编辑解释-->
+<div class="modal fade" id="edit_interpreter_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >编辑车流量</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="edit_interpreter_updater" class="col-form-label">解释:</label>
+            <input type="text" class="form-control" id="edit_interpreter_log">
 
+            <label for="edit_interpreter_updateTime" class="col-form-label">时间:</label>
+            <input type="text" class="form-control" id="edit_interpreter_updateTime">
+
+            <input type="hidden" class="form-control" id="edit_interpreter_id">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "edit_interpreter_submit">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <script src="static/assets/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>

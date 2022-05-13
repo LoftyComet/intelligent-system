@@ -27,6 +27,10 @@ class IndexHandler(tornado.web.RequestHandler):
             sub_menu = "知识管理"
             entitys = dbUtil.findFKnowledgeList(db)
 
+        elif menu_name == 'interpreter':
+            sub_menu = "解释"
+            entitys = dbUtil.findInterpreterList(db)
+
         #默认
         else:
             sub_menu = "用户管理"
