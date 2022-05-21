@@ -189,6 +189,47 @@ class FKnowledgeHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
         self.render("index.html")
 
+# 可信度知识
+class CKnowledgeHandler(tornado.web.RequestHandler):
+
+    def post(self, *args, **kwargs):
+        db = self.settings['db']
+        dic = {"status":True,"message":""}
+        type = self.get_argument("type")
+        if type == 'add':
+            print("adddddddddddddddddddddd")
+            condition = self.get_argument("condition")
+            conclusion = self.get_argument("conclusion")
+            threshold_str = self.get_argument("threshold")
+            yuzhi_str=self.get_argument("yuzhi")
+            updater = self.get_argument("updater")
+            updateTime = self.get_argument("updateTime")
+            threshold=float(threshold_str)
+            yuzhi=float(yuzhi_str)
+            dbUtil.addCKnowledge(db,condition, conclusion, threshold,yuzhi, updater, updateTime)
+            
+        elif type == 'edit':
+            id=self.get_argument("id")
+            condition = self.get_argument("condition")
+            conclusion = self.get_argument("conclusion")
+            threshold_str = self.get_argument("threshold")
+            yuzhi_str=self.get_argument("yuzhi")
+            updater = self.get_argument("updater")
+            updateTime = self.get_argument("updateTime")
+            # print("threshold")
+            # print(threshold_str)
+            threshold = float(threshold_str)
+            yuzhi=float(yuzhi_str)
+            dbUtil.updateCKnowledge(db,id,condition, conclusion, threshold,yuzhi, updater, updateTime)
+        elif type == 'delete':
+            id = self.get_argument("id")
+            dbUtil.deleteCKnowledge(db,id)
+
+        self.write(json.dumps(dic))
+
+    def get(self, *args, **kwargs):
+        self.render("index.html")
+
 class Interperter(tornado.web.RequestHandler):
 
     def post(self, *args, **kwargs):
@@ -214,5 +255,6 @@ default_handlers = [
     (r"/user", UserHandler),
     (r"/car", CarHandler),
     (r"/rule", FKnowledgeHandler),
+    (r"/rule2", CKnowledgeHandler),
     (r"/interpreter", Interperter),
 ]

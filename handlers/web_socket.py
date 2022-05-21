@@ -40,6 +40,8 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         else:
             state = data['state']
             ser.write(str(state).encode())
+            print("state",state)
+            print("------------------")
 
     def open(self):
 
@@ -72,15 +74,21 @@ def reasonHandler(data):
     print("topLeft:"+str(topLeft)+ ";topRight:"+str(topRight)+";eastLeft="+str(eastLeft)+";eastRight="+str(eastRight))
 
     ####################推理机处理逻辑开始#################
-    # 获取模糊集元素
-    input1,input2 = getFuzzyElement(topRight,eastLeft,eastRight,topLeft)
-
     # 连接数据库
     
     db_url = 'mysql+mysqlconnector://root:123456@127.0.0.1:3306/traffic?charset=utf8&autocommit=true&auth_plugin=mysql_native_password'
     engine = create_engine(db_url,encoding='utf-8',echo=True)
     session_factory = sessionmaker(bind=engine, expire_on_commit=False)
     db = session_factory()
+    # 获取模糊集元素
+    nowtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    dbUtil.addCar(db,1,topRight,eastLeft,eastRight,topLeft,nowtime)
+    input1,input2 = getFuzzyElement(topRight,eastLeft,eastRight,topLeft)
+
+    print("----------------------------------")
+    print(cars)
+    print(input1,input2)
+    print("----------------------------------")
     
     # 调用数据库获取模糊矩阵
     dbfuzzyMatrix=dbUtil.findFuzzyMatrixById(db,1)
@@ -94,7 +102,8 @@ def reasonHandler(data):
     
     # 解释输入
     output1,output2 = outputEvidence(input1,input2)
-
+    # print(output2)
+    # print("aaaaaaaaaaaaaaa")
     # 推理机开始
 
     decision = getFuzzyVector(input1,input2,fuzzyMatrix)
@@ -132,6 +141,8 @@ def checkTask():
     last = ""
     while(1):
         data = ser.readline()
+        # print(data)
+        # print("bbbbbbbbbbbbbbbbbbb")
         s3 = data.decode().rstrip()
         if s3 == '' and last != '':
             for client in SocketHandler.clients:

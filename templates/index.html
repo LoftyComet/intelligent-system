@@ -83,6 +83,14 @@
                 </a>
               </li>
             </ul>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="?name=rule2">
+                  <span data-feather="file-text"></span>
+                  可信度知识
+                </a>
+              </li>
+            </ul>
             <div a class="nav-link active" >
               <span data-feather="home"></span>
                 <span><a href="/preview">仿真系统预览</a></span>
@@ -109,6 +117,9 @@
                 <button id="add_car_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
                 {% elif menu_name == 'rule' %}
                 <button id="add_rule_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
+                {% elif menu_name == 'rule2' %}
+                <button id="add_rule2_modal_show_btn" type="button" class="btn btn-sm btn-outline-secondary" >添加</button>
+                
                 {% end %}
               </div>
             </div>
@@ -127,13 +138,24 @@
                     <th scope="col">更新时间</th>
                   {% elif menu_name == 'car' %}
                     <th scope="col">#</th>
-                    <th scope="col">信号灯ID</th>
-                    <th scope="col">车流量</th>
+                    <th scope="col">信号灯ID</th>   
+                    <th scope="col">topRight</th>
+                    <th scope="col">eastLeft</th>
+                    <th scope="col">eastRight</th>
+                    <th scope="col">topLeft</th>
                     <th scope="col">时间</th>
                   {% elif menu_name == 'interpreter' %}
                     <th scope="col">#</th>
                     <th scope="col">解释</th>
                     <th scope="col">时间</th>
+                  {% elif menu_name == 'rule2' %}
+                    <th scope="col">#</th>
+                    <th scope="col">前提</th>
+                    <th scope="col">结论</th>
+                    <th scope="col">可信度</th>
+                    <th scope="col">阈值</th>
+                    <th scope="col">更新者</th>
+                    <th scope="col">更新时间</th>
                   {% else %}
                     <th scope="col">#</th>
                     <th scope="col">姓名</th>
@@ -156,13 +178,16 @@
                   <tr>
                     <th scope="row">{{index+1}}</th>
                     <td>{{element.light}}</td>
-                    <td>{{element.traffic}}</td>
+                    <td>{{element.topRight}}</td>   
+                    <td>{{element.eastLeft}}</td>
+                    <td>{{element.eastRight}}</td>
+                    <td>{{element.topLeft}}</td>
                     <td>{{element.time}}</td>
                     <td class="opttd">
                       <a class="optbtn" opttype="editCar" dataId="{{element.id}}" light="{{element.light}}"
-                        traffic="{{element.traffic}}" time="{{element.time}}">编辑</a>
+                      topRight="{{element.topRight}}" eastLeft="{{element.eastLeft}}" eastRight="{{element.eastRight}}" topLeft="{{element.topLeft}}" time="{{element.time}}">编辑</a>
                       <a class="optbtn" opttype="deleteCar" dataId="{{element.id}}" light="{{element.light}}"
-                        traffic="{{element.traffic}}" time="{{element.time}}">删除</a>
+                      topRight="{{element.topRight}}" eastLeft="{{element.eastLeft}}" eastRight="{{element.eastRight}}" topLeft="{{element.topLeft}}" time="{{element.time}}">删除</a>
                     </td>
                   </tr>
                   {% elif menu_name == 'rule' %}
@@ -179,6 +204,25 @@
                          updater="{{element.updater}}" updateTime="{{element.updateTime}}">编辑</a>
                       <a class="optbtn" opttype="deleteRule" dataId="{{element.id}}" condition="{{element.condition}}"
                         conclusion="{{element.conclusion}}" threshold="{{element.threshold}}"
+                         updater="{{element.updater}}" updateTime="{{element.updateTime}}">删除</a>
+                    </td>
+                  </tr>
+                  <!-- 可信度知识 -->
+                  {% elif menu_name == 'rule2' %}    
+                  <tr>
+                    <th scope="row">{{index+1}}</th>
+                    <td>{{element.condition}}</td>
+                    <td>{{element.conclusion}}</td>
+                    <td>{{element.threshold}}</td>
+                    <td>{{element.yuzhi}}</td>
+                    <td>{{element.updater}}</td>
+                    <td>{{element.updateTime}}</td>
+                    <td class="opttd">
+                      <a class="optbtn" opttype="editRule2" dataId="{{element.id}}" condition="{{element.condition}}"
+                        conclusion="{{element.conclusion}}" threshold="{{element.threshold}}" yuzhi="{{element.yuzhi}}"
+                         updater="{{element.updater}}" updateTime="{{element.updateTime}}">编辑</a>
+                      <a class="optbtn" opttype="deleteRule2" dataId="{{element.id}}" condition="{{element.condition}}"
+                        conclusion="{{element.conclusion}}" threshold="{{element.threshold}}" yuzhi="{{element.yuzhi}}"
                          updater="{{element.updater}}" updateTime="{{element.updateTime}}">删除</a>
                     </td>
                   </tr>
@@ -263,9 +307,16 @@
               <div class="mb-3">
                 <label for="add_car_light" class="col-form-label">信号灯ID:</label>
                 <input type="text" class="form-control" id="add_car_light">
+               
+                <label for="add_car_topRight" class="col-form-label">topRight</label>
+                <input type="text" class="form-control" id="add_car_topRight">
+                <label for="add_car_eastLeft" class="col-form-label">eastLeft</label>
+                <input type="text" class="form-control" id="add_car_eastLeft">
+                <label for="add_car_eastRight" class="col-form-label">eastRight</label>
+                <input type="text" class="form-control" id="add_car_eastRight">
+                <label for="add_car_topLeft" class="col-form-label">topLeft</label>
+                <input type="text" class="form-control" id="add_car_topLeft">
 
-                <label for="add_car_traffic" class="col-form-label">车流量:</label>
-                <input type="text" class="form-control" id="add_car_traffic">
 
                 <label for="add_car_time" class="col-form-label">时间:</label>
                 <input type="text" class="form-control" id="add_car_time">
@@ -295,8 +346,14 @@
                 <label for="edit_car_light" class="col-form-label">信号灯ID:</label>
                 <input type="text" class="form-control" id="edit_car_light">
 
-                <label for="edit_car_traffic" class="col-form-label">车流量:</label>
-                <input type="text" class="form-control" id="edit_car_traffic">
+                <label for="add_car_topRight" class="col-form-label">topRight</label>
+                <input type="text" class="form-control" id="add_car_topRight">
+                <label for="add_car_eastLeft" class="col-form-label">eastLeft</label>
+                <input type="text" class="form-control" id="add_car_eastLeft">
+                <label for="add_car_eastRight" class="col-form-label">eastRight</label>
+                <input type="text" class="form-control" id="add_car_eastRight">
+                <label for="add_car_topLeft" class="col-form-label">topLeft</label>
+                <input type="text" class="form-control" id="add_car_topLeft">
 
                 <label for="edit_car_time" class="col-form-label">时间:</label>
                 <input type="text" class="form-control" id="edit_car_time">
@@ -389,6 +446,94 @@
         </div>
       </div>
     </div>
+
+<!--    添加可信度知识-->
+<div class="modal fade" id="add_rule2_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >添加知识</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="add_rule2_condition" class="col-form-label">前提:</label>
+            <input type="text" class="form-control" id="add_rule2_condition">
+
+            <label for="add_rule2_conclusion" class="col-form-label">结论:</label>
+            <input type="text" class="form-control" id="add_rule2_conclusion">
+
+            <label for="add_rule2_threshold" class="col-form-label">可信度:</label>
+            <input type="text" class="form-control" id="add_rule2_threshold">
+
+            <label for="add_rule2_yuzhi" class="col-form-label">阈值:</label>
+            <input type="text" class="form-control" id="add_rule2_yuzhi">
+
+            <label for="add_rule2_updater" class="col-form-label">更新者:</label>
+            <input type="text" class="form-control" id="add_rule2_updater">
+
+            <label for="add_rule2_updateTime" class="col-form-label">更新时间:</label>
+            <input type="text" class="form-control" id="add_rule2_updateTime">
+
+
+            <input type="hidden" class="form-control" id="add_rule2_id">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "add_rule2_submit">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--    编辑可信度知识-->
+<div class="modal fade" id="edit_rule2_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >编辑车流量</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="edit_rule2_condition" class="col-form-label">前提:</label>
+            <input type="text" class="form-control" id="edit_rule2_condition">
+
+            <label for="edit_rule2_conclusion" class="col-form-label">结论:</label>
+            <input type="text" class="form-control" id="edit_rule2_conclusion">
+
+            <label for="edit_rule2_threshold" class="col-form-label">可信度:</label>
+            <input type="text" class="form-control" id="edit_rule2_threshold">
+
+            <label for="add_rule2_yuzhi" class="col-form-label">阈值:</label>
+            <input type="text" class="form-control" id="add_rule2_yuzhi">
+
+            <label for="edit_rule2_updater" class="col-form-label">更新者:</label>
+            <input type="text" class="form-control" id="edit_rule2_updater">
+
+            <label for="edit_rule2_updateTime" class="col-form-label">更新时间:</label>
+            <input type="text" class="form-control" id="edit_rule2_updateTime">
+
+            <input type="hidden" class="form-control" id="edit_rule2_id">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "edit_rule2_submit">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 <!--    编辑解释-->
 <div class="modal fade" id="edit_interpreter_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

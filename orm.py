@@ -74,7 +74,10 @@ class Car(Base):
     __tablename__ = 'car'
     id = Column(Integer, primary_key=True, autoincrement=True)
     light=Column(Integer,unique=False)
-    traffic=Column(Integer, unique=False)
+    topRight=Column(Integer, unique=False)
+    eastLeft=Column(Integer, unique=False)
+    eastRight=Column(Integer, unique=False)
+    topLeft=Column(Integer, unique=False)
     time = Column(Text(255), unique=False)
 
     def __repr__(self):
@@ -150,7 +153,10 @@ class CKnowledge(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     condition = Column(Text(255), unique=False)
     conclusion = Column(Text(255), unique=False)
-    threshold=Column(Float, unique=False)    # 知识使用的阈值
+    threshold=Column(Float, unique=False)    # 知识使用的可信度
+    yuzhi=Column(Float, unique=False)
+    updater=Column(Text(255), unique=False)     # 更新者
+    updateTime=Column(Text(255), unique=False)   # 更新时间
     def __repr__(self):
         return "<{} {} >".format(
             self.__class__.__name__,
@@ -223,5 +229,4 @@ class Interpreter(Base):
     @classmethod
     def findbyId(cls, db, id):
         return db.query(cls).filter(cls.id == id).first()
-
 

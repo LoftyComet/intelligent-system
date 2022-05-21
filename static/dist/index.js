@@ -55,6 +55,7 @@ function optBtnHandler(e){
         }
     }
     else if(optType=="editRule"){
+        
         var condition = $(this).attr("condition");
         var conclusion = $(this).attr("conclusion");
         var threhold = $(this).attr("threshold");
@@ -85,6 +86,26 @@ function optBtnHandler(e){
                     window.location.reload();
                 })
         }
+    }
+    else if(optType=="editRule2"){
+        // console.log("添加了");
+        var condition = $(this).attr("condition");
+        var conclusion = $(this).attr("conclusion");
+        var threhold = $(this).attr("threshold");
+        var yuzhi = $(this).attr("yuzhi");
+        var updater = $(this).attr("updater");
+        var updateTime = $(this).attr("updateTime");
+        $("#edit_rule2_id").val(dataId);
+        $("#edit_rule2_condition").val(condition);
+        $("#edit_rule2_conclusion").val(conclusion);
+        $("#edit_rule2_threshold").val(threhold);
+        $("#edit_rule2_yuzhi").val(yuzhi);
+        $("#edit_rule2_updater").val(updater);
+        $("#edit_rule2_updateTime").val(updateTime);
+        var myModal = new bootstrap.Modal(document.getElementById('edit_rule2_modal'), {
+          keyboard: false
+        });
+        myModal.show();
     }
 }
 
@@ -145,15 +166,22 @@ function onAddCarSubmitClickHandler(e){
     var myModal = new bootstrap.Modal(document.getElementById('add_car_modal_show_btn'), {
       keyboard: false
     })
+    // topRight,eastLeft,eastRight,topLeft
     var light = $("#add_car_light").val();
-    var traffic = $("#add_car_traffic").val();
+    var topRight = $("#add_car_topRight").val();
+    var eastLeft = $("#add_car_eastLeft").val();
+    var eastRight = $("#add_car_eastRight").val();
+    var topLeft = $("#add_car_topLeft").val();
     var time = $("#add_car_time").val();
     console.log("点击了添加");
     $.post('/car',
         {
             "type": 'add',
             "light": light,
-            "traffic": traffic,
+            "topRight": topRight,
+            "eastLeft": eastLeft,
+            "topLeft": topLeft,
+            "eastRight": eastRight,
             "time": time,
         },
         function (callback) {
@@ -193,6 +221,7 @@ function onAddRuleClickHandler(e){
     var myModal = new bootstrap.Modal(document.getElementById('add_rule_modal'), {
       keyboard: false
     })
+    // alert("cjdsb");
     myModal.show()
 }
 
@@ -253,6 +282,81 @@ function onEidtRuleSubmitClickHandler(e){
     myModal.hide()
 }
 
+// 下面是可信度知识的增删改查
+function onAddRule2ClickHandler(e){
+    // alert("我被点击了");
+    console.log("我被点击了");
+    var myModal = new bootstrap.Modal(document.getElementById('add_rule2_modal'), {
+      keyboard: false
+    })
+    myModal.show()
+}
+
+function onAddRule2SubmitClickHandler(e){
+    var myModal = new bootstrap.Modal(document.getElementById('add_rule2_modal_show_btn'), {
+      keyboard: false
+    })
+    var condition=$("#add_rule2_condition").val();
+    var conclusion=$("#add_rule2_conclusion").val();
+    var threshold=$("#add_rule2_threshold").val();
+    var yuzhi=$("#add_rule2_yuzhi").val();
+    var updater=$("#add_rule2_updater").val();
+    var updateTime=$("#add_rule2_updateTime").val();
+    $.post('/rule2',
+        {
+            "type": 'add',
+            "condition": condition,
+            "conclusion": conclusion,
+            "threshold": threshold,
+            "yuzhi":yuzhi,
+            "updater": updater,
+            "updateTime": updateTime,
+
+        },
+        function (callback) {
+            window.location.reload();
+        })
+
+
+    myModal.hide()
+}
+
+function onEidtRule2SubmitClickHandler(e){
+    var myModal = new bootstrap.Modal(document.getElementById('add_rule2_modal_show_btn'), {
+      keyboard: false
+    })
+    var condition=$("#edit_rule2_condition").val();
+    // console.log(conclusion)
+    var conclusion=$("#edit_rule2_conclusion").val();
+    var threshold=$("#edit_rule2_threshold").val();
+    var yuzhi=$("#edit_rule2_yuzhi").val();
+    console.log("threshold");
+    console.log(threshold);
+    var updater=$("#edit_rule2_updater").val();
+    var updateTime=$("#edit_rule2_updateTime").val();
+    var id=$("#edit_rule2_id").val();
+    console.log(id);
+    $.post('/rule2',
+        {
+            "type": 'edit',
+            "condition": condition,
+            "conclusion": conclusion,
+            "threshold": threshold,
+            "yuzhi":yuzhi,
+            "updater": updater,
+            "updateTime": updateTime,
+            "id":id
+        },
+        function (callback) {
+            window.location.reload();
+        })
+    myModal.hide()
+}
+
+
+
+
+
 $(document).ready(function(){
     $('#add_user_modal_show_btn').click(onAddUserClickHandler);
     $("#add_user_submit").click(onAddUserSubmitClickHandler);
@@ -267,6 +371,10 @@ $(document).ready(function(){
     $("#edit_rule_submit").click(onEidtRuleSubmitClickHandler);
     $('#add_rule_modal_show_btn').click(onAddRuleClickHandler);
     $("#add_rule_submit").click(onAddRuleSubmitClickHandler);
+
+    $("#edit_rule2_submit").click(onEidtRule2SubmitClickHandler);
+    $('#add_rule2_modal_show_btn').click(onAddRule2ClickHandler);
+    $("#add_rule2_submit").click(onAddRule2SubmitClickHandler);
 
 
 })

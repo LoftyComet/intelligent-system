@@ -4,25 +4,25 @@ def outputEvidence(output1,output2):
     """
     currentcar = ""
     nextcar = ""
-    if (output1=="VF"):
+    if (output1=="VM"):
         currentcar = "当前路口车辆非常多"
-    elif (output1=="LF"):
+    elif (output1=="LM"):
         currentcar = "当前路口车辆比较多"
     elif (output1=="M"):
         currentcar = "当前路口车辆适中"
-    elif (output1=="LM"):
+    elif (output1=="LF"):
         currentcar = "当前路口车辆比较少"
-    elif (output1=="VM"):
+    elif (output1=="VF"):
         currentcar = "当前路口车辆非常少"
-    if (output2=="VF"):
+    if (output2=="VM"):
         nextcar = "临近路口车辆非常多"
-    elif (output2=="LF"):
+    elif (output2=="LM"):
         nextcar = "临近路口车辆比较多"
     elif (output2=="M"):
         nextcar = "临近路口车辆适中"
-    elif (output2=="LM"):
+    elif (output2=="LF"):
         nextcar = "临近路口车辆比较少"
-    elif (output2=="VM"):
+    elif (output2=="VF"):
         nextcar = "临近路口车辆非常少"
     return currentcar,nextcar
 

@@ -25,14 +25,22 @@ def findUserList(db):
 
 
 # 车流量的增删改查
-def addCar(db,carlight,cartraffic,cartime):
-    car = orm.Car(light=carlight,traffic=cartraffic,time=cartime)
+def addCar(db,carlight,topRight,eastLeft,eastRight,topLeft,cartime):
+    car = orm.Car(light=carlight,
+    topRight=topRight,
+    eastLeft=eastLeft,
+    eastRight=eastRight,
+    topLeft=topLeft,
+    time=cartime)
     db.add(car)
     db.commit()
-def updateCar(db,id,carlight,cartraffic,cartime):
+def updateCar(db,id,carlight,topRight,eastLeft,eastRight,topLeft,cartime):
     car = orm.Car.findById(db, id)
     car.light = carlight
-    car.traffic = cartraffic
+    car.topRight = topRight
+    car.eastLeft = eastLeft
+    car.eastRight = eastRight
+    car.topLeft = topLeft
     car.time = cartime
     db.commit()
 def deleteCar(db, id):
@@ -87,19 +95,21 @@ def findCLightList(db):
 
 
 # 可信度知识库的增删改查
-def addCKnowledge(db, condition, conclusion, threshold, updater, updateTime):
+def addCKnowledge(db, condition, conclusion, threshold, yuzhi,updater, updateTime):
     cknowledge=orm.CKnowledge(condition=condition,
                               conclusion=conclusion,
                               threshold=threshold,
+                              yuzhi=yuzhi,
                               updater=updater,
                               updateTime=updateTime)
     db.add(cknowledge)
     db.commit()
-def updateCKnowledge(db, id, condition, conclusion, threshold,updater, updateTime):
+def updateCKnowledge(db, id, condition, conclusion, threshold,yuzhi,updater, updateTime):
     cknowledge=orm.CKnowledge.findbyId(db,id)
     cknowledge.condition=condition
     cknowledge.conclusion=conclusion
     cknowledge.threshold=threshold
+    cknowledge.yuzhi=yuzhi
     cknowledge.updater=updater
     cknowledge.updateTime=updateTime
     db.commit()
